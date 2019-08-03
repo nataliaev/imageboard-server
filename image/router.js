@@ -16,7 +16,7 @@ router.post('/image', auth, (req, res, next) => {
     .catch(err => next(err))
 })
 
-router.delete('/image:id', (request, response, next) => {
+router.delete('/image/:id', (request, response, next) => {
   Image.destroy({
     where : { id : request.params.id}
   })
