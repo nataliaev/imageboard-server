@@ -1,27 +1,34 @@
-const { Router } = require('express')
-const Image = require('./model')
-const auth = require('../auth/middleware')
+const { Router } = require("express");
+const Image = require("./model");
+const auth = require("../auth/middleware");
 
-const router = new Router()
+const router = new Router();
 
-router.get('/image', (req, res, next) => {
+router.get("/image", (req, res, next) => {
   Image.findAll()
     .then(image => res.send(image))
-    .catch(err => next(err))
-})
+    .catch(err => next(err));
+});
 
-router.post('/image', auth, (req, res, next) => {
+router.post("/image", auth, (req, res, next) => {
   Image.create(req.body)
     .then(image => res.send(image))
-    .catch(err => next(err))
-})
+    .catch(err => next(err));
+});
 
-router.delete('/image/:id', (request, response, next) => {
+router.put("/image/:id", (request, response, next) => {
+  Image.findByPk(request.params.id)
+    .then(image => image.update(request.body))
+    .then(image => response.send(image))
+    .catch(err => next(err));
+});
+
+router.delete("/image/:id", (request, response, next) => {
   Image.destroy({
-    where : { id : request.params.id}
+    where: { id: request.params.id }
   })
     .then(number => response.send({ number }))
-    .catch(err => next(err))
-})
+    .catch(err => next(err));
+});
 
-module.exports = router
+module.exports = router;
