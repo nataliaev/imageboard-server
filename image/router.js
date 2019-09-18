@@ -1,11 +1,14 @@
 const { Router } = require("express");
 const Image = require("./model");
+const User = require("../user/model")
 const auth = require("../auth/middleware");
 
 const router = new Router();
 
 router.get("/image", (req, res, next) => {
-  Image.findAll()
+  Image.findAll({include : [{
+    model: User, attributes: ['id']
+}]})
     .then(image => res.send(image))
     .catch(err => next(err));
 });

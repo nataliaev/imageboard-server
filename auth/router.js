@@ -2,6 +2,7 @@ const { Router } = require('express')
 const { toJWT } = require('./jwt')
 const bcrypt = require('bcrypt')
 const User = require('../user/model')
+const Image = require('../image/model')
 const auth = require('./middleware')
 
 const router = new Router()
@@ -24,7 +25,8 @@ router.post('/logins', (req, res) => {
       .findOne({
         where: {
           email: req.body.email
-        }
+        },
+        include: [Image]
       })
       .then(entity => {
         if (!entity) {
@@ -38,7 +40,8 @@ router.post('/logins', (req, res) => {
 
           // 3. if the password is correct, return a JWT with the userId of the user (user.id)
           res.send({
-            jwt: toJWT({ userId: entity.id })
+            jwt: toJWT({ userId: entity.id }),
+            favorites: entity.images
           })
         }
         else {
