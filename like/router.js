@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const Like = require("./model");
-//const auth = require("../auth/middleware");
+const auth = require("../auth/middleware");
 const { toData } = require('../auth/jwt')
 
 const router = new Router();
 
-router.post("/like", (req, res, next) => {
+router.post("/like", auth, (req, res, next) => {
   const authBlock =
     req.headers.authorization && req.headers.authorization.split(" ");
       
@@ -17,6 +17,19 @@ router.post("/like", (req, res, next) => {
     userId
   })
     .then(like => res.send(like))
+    .catch(err => next(err));
+});
+
+router.delete("/like/:id", auth, (request, response, next) => {
+  const authBlock =
+    request.headers.authorization && request.headers.authorization.split(" ");
+      
+  const user = toData(authBlock[1]).userId;
+
+  Like.destroy({
+    where: { imageId: request.params.id,  userId: user}
+  })
+    .then(number => response.send({ number }))
     .catch(err => next(err));
 });
 
