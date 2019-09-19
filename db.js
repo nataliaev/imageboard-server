@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize')
 
-const databaseUrl = 'postgres://postgres:secret@localhost:5432/postgres'
-
-//process.env.DATABASE_URL || 
+const databaseUrl = process.env.DATABASE_URL || 'postgres://postgres:secret@localhost:5432/postgres'
 
 const db = new Sequelize(databaseUrl)
 
-db.sync({force: false})
+db.sync({force: true})
   .then(() => console.log('Database connected'))
   .catch(console.error)
 
